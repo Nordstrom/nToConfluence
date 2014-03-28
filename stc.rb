@@ -42,10 +42,23 @@ class StashToConfluence
     end
   end
 
+  # TODO: Finish this up
+  #class Disk
+  #  def get_file(path)
+  #    File.read("#{docs_dir}/#{file}.md")
+  #  end
+
+  #  def get_md_files(path)
+  #    Dir.entries(docs_dir).reject { |d| d == '.' || d == '..' }.map { |f| f.sub('.md', '') }
+  #  end
+  #end
+
   class Stash
     # https://developer.atlassian.com/static/rest/stash/2.12.0/stash-rest.html
     def initialize(user, password, project, repo)
-      url = "https://git.nordstrom.net/rest/api/1.0/projects/#{project}/repos/#{repo}"
+      url = "https://git.nordstrom.net/"
+      @api = "rest/api/1.0/projects/#{project}/repos/#{repo}"
+      @raw = "projects/#{project}/repos/#{repo}/browse/"
       @conn = Faraday.new(url, ssl: { verify: false }) do |f|
         f.basic_auth(user, password)
         f.request :url_encoded
@@ -54,26 +67,21 @@ class StashToConfluence
     end
 
     def get_file(path)
-      file = get_path(path)
-      file['lines'].map { |l| l['text'] }.reduce { |a, e| a + '\r' + e }
+      response = @conn.get("#{@raw}#{path}?raw")
+      response.body
     end
 
     def get_md_files(path)
-      directory = get_path(path)
+      response = @conn.get("#{@api}/browse/#{path}")
+      directory = JSON.parse(response.body)
       directory['children']['values'].map { |d| d['path']['name'] }.select { |d| d.end_with?('.md') }
-    end
-
-    private
-
-    def get_path(path)
-      response = @conn.get("browse/#{path}")
-      JSON.parse(response.body)
     end
   end
 
   class Application
-    def initialize(user, password, space, app_name)
+    def initialize(user, password, space, app_name, project, repo)
       @confluence = Confluence.new("https://confluence.nordstrom.net/rpc/xmlrpc", user, password)
+      @stash = Stash.new(user, password, project, repo)
       @markdown = MarkdownToHtml.new()
       @header = @markdown.render(File.read('header.md'))
 
@@ -84,28 +92,36 @@ class StashToConfluence
     def go
       home_id = @confluence.get_home_id(@space)
       docs_dir = 'docs'
-      files = Dir.entries(docs_dir).reject { |d| d == '.' || d == '..' }.map { |f| f.sub('.md', '') }
 
-      start_page_file = files.first { |f| f.upcase == 'README' }
+      begin
+        files = @stash.get_md_file(docs_dir)
+      # TODO: Catch the specific exception we want
+      rescue
+        files = []
+      end
 
-      start_page = upsert_page(start_page_file, home_id, docs_dir, @app_name)
+      start_page_file = "README"
+
+      start_page = upsert_page(start_page_file, "", home_id, docs_dir, @app_name)
 
       start_page_id = start_page['id']
 
       files.reject { |f| f == start_page_file }.each do |f|
-        upsert_page(f, start_page_id, docs_dir)
+        upsert_page(f, "#{docs_dir}/", start_page_id, docs_dir)
       end
     end
 
-    def upsert_page(file, start_page_id, docs_dir, title = file)
+    def upsert_page(file, path, start_page_id, docs_dir, title = file)
       begin
         page = @confluence.get_page_by_space(@space, title)
-        # TODO: Catch the specific exception we want
+      # TODO: Catch the specific exception we want
       rescue
         page = { "content" => "", "title" => "", "space" => @space, "parentId" => start_page_id }
       end
 
-      rendered = @markdown.render(File.read("#{docs_dir}/#{file}.md"))
+      file_from_reader = @stash.get_file("#{path}#{file}.md")
+      rendered = @markdown.render(file_from_reader)
+
       page['content'] = "#{@header}<hr/>#{rendered}"
       page['title'] = title
 

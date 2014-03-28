@@ -8,5 +8,5 @@ The Solution: Upload your source-controlled documentation into confluence. This 
 
 ## Prereqs:
 1. Ruby 1.9.3
-2. Install the redcarpet, faraday, and xmlrpc gems
+2. Install the gems via Gemfile
 

@@ -1,10 +1,15 @@
 require 'xmlrpc/client'
 require 'redcarpet'
+require 'faraday'
+require 'json'
 
 class StashToConfluence
   class Confluence
+    # objects: https://developer.atlassian.com/display/CONFDEV/Remote+Confluence+Data+Objects
+    # methods: https://developer.atlassian.com/display/CONFDEV/Remote+Confluence+Methods
+
     def initialize(url, user, password)
-      server = XMLRPC::Client.new2("https://confluence.nordstrom.net/rpc/xmlrpc")
+      server = XMLRPC::Client.new2(url)
       server.instance_variable_get(:@http).instance_variable_set(:@verify_mode, OpenSSL::SSL::VERIFY_NONE)
       @confluence = server.proxy('confluence2')
       @token = @confluence.login(user, password)
@@ -27,7 +32,6 @@ class StashToConfluence
     end
   end
 
-
   class MarkdownToHtml
     def initialize()
       @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
@@ -38,16 +42,43 @@ class StashToConfluence
     end
   end
 
+  class Stash
+    # https://developer.atlassian.com/static/rest/stash/2.12.0/stash-rest.html
+    def initialize(user, password, project, repo)
+      url = "https://git.nordstrom.net/rest/api/1.0/projects/#{project}/repos/#{repo}"
+      @conn = Faraday.new(url, ssl: { verify: false }) do |f|
+        f.basic_auth(user, password)
+        f.request :url_encoded
+        f.adapter  Faraday.default_adapter
+      end
+    end
+
+    def get_file(path)
+      file = get_path(path)
+      file['lines'].map { |l| l['text'] }.reduce { |a, e| a + '\r' + e }
+    end
+
+    def get_md_files(path)
+      directory = get_path(path)
+      directory['children']['values'].map { |d| d['path']['name'] }.select { |d| d.end_with?('.md') }
+    end
+
+    private
+
+    def get_path(path)
+      response = @conn.get("browse/#{path}")
+      JSON.parse(response.body)
+    end
+  end
 
   class Application
     def initialize(user, password, space, app_name)
-      @confluence = Confluence.new("", user, password)
+      @confluence = Confluence.new("https://confluence.nordstrom.net/rpc/xmlrpc", user, password)
       @markdown = MarkdownToHtml.new()
       @header = @markdown.render(File.read('header.md'))
 
       @space = space
       @app_name = app_name
-
     end
 
     def go

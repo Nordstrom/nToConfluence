@@ -1,21 +1,28 @@
-# Some sort of document
+## Obligatory ASCII Logo
+                       __                    ___  __      
+                      /\ \                 /'___\/\ \__   
+     __  __  _____    \_\ \  _ __    __   /\ \__/\ \ ,_\  
+    /\ \/\ \/\ '__`\  /'_` \/\`'__\/'__`\ \ \ ,__\\ \ \/  
+    \ \ \_\ \ \ \L\ \/\ \L\ \ \ \//\ \L\.\_\ \ \_/ \ \ \_ 
+     \ \____/\ \ ,__/\ \___,_\ \_\\ \__/.\_\\ \_\   \ \__\
+      \/___/  \ \ \/  \/__,_ /\/_/ \/__/\/_/ \/_/    \/__/
+               \ \_\                                      
+                \/_/                                      
 
 ## Overview
-This is a cool document!
+Updraft is a bootstrapper utility to create a Go server and Go agents in AWS.
 
-### A list
-1. Ruby 1.9.3
-2. Install the redcarpet and xmlrpc gems.
+Clone the latest and try a **updraft --help**
 
-```Some code
-```Some more code!
+## Prereqs:
+1. You must have Jukebox installed and set in your path
+2. Ruby 1.9.3
+3. You have to have your AWS stuff (access, cert, configs, etc) ready to go
+4. Setup the config/updraft.yml values accordingly
+5. Make sure you install the gems as indicated by the Gemfile
+
+## Updraft
+Birds and insects use updrafts and thermals as a tool to help them fly long distances.
 
 ## test
-[A relative test link](test)
-
-
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
+[A relative test link](test.md)

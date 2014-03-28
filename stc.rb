@@ -21,6 +21,10 @@ class StashToConfluence
     def save_page(page)
       @confluence.storePage(@token, page)
     end
+
+    def get_home_id(space)
+      @confluence.getSpace(@token, space)['homePage']
+    end
   end
 
 
@@ -47,34 +51,34 @@ class StashToConfluence
     end
 
     def go
+      home_id = @confluence.get_home_id(@space)
       docs_dir = 'docs'
-      files = Dir.entries(docs_dir).reject{ |d| d == '.' || d == '..' }.map{ |f| f.sub('.md', '') }
+      files = Dir.entries(docs_dir).reject { |d| d == '.' || d == '..' }.map { |f| f.sub('.md', '') }
 
-      start_page = files.first{ |f| f.upcase == 'README' }
+      start_page_file = files.first { |f| f.upcase == 'README' }
 
-      page = @confluence.get_page_by_space(@space, @app_name)
-#      page = @confluence.get_page_by_id(42726778)
-      page['content'] = "#{@header}<hr/>#{@markdown.render(File.read("#{docs_dir}/#{start_page}.md"))}"
-      page['title'] = @app_name
+      start_page = upsert_page(start_page_file, home_id, docs_dir, @app_name)
+
+      start_page_id = start_page['id']
+
+      files.reject { |f| f == start_page_file }.each do |f|
+        upsert_page(f, start_page_id, docs_dir)
+      end
+    end
+
+    def upsert_page(file, start_page_id, docs_dir, title = file)
+      begin
+        page = @confluence.get_page_by_space(@space, title)
+        # TODO: Catch the specific exception we want
+      rescue
+        page = { "content" => "", "title" => "", "space" => @space, "parentId" => start_page_id }
+      end
+
+      rendered = @markdown.render(File.read("#{docs_dir}/#{file}.md"))
+      page['content'] = "#{@header}<hr/>#{rendered}"
+      page['title'] = title
 
       @confluence.save_page(page)
-
-      start_page_id = page['id']
-
-
-      files.reject { |f| f == start_page }.each do |f|
-        begin
-          page = @confluence.get_page_by_space(@space, f)
-        rescue
-          page = { "content" => "", "title" => "", "space" => @space, "parentId" => start_page_id }
-        end
-
-        rendered = @markdown.render(File.read("#{docs_dir}/#{f}.md"))
-        page['content'] = "#{@header}<hr/>#{rendered}"
-        page['title'] = f
-
-        @confluence.save_page(page)
-      end
     end
   end
 end

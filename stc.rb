@@ -74,7 +74,8 @@ class StashToConfluence
     def get_md_files(path)
       response = @conn.get("#{@api}/browse/#{path}")
       directory = JSON.parse(response.body)
-      directory['children']['values'].map { |d| d['path']['name'] }.select { |d| d.end_with?('.md') }
+      # choochoo, i can read it, can you?
+      directory['children']['values'].map { |d| d['path']['name'] }.select { |d| d.end_with?('.md') }.map { |d| d.sub('.md', '') }
     end
   end
 

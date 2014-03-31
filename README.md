@@ -19,5 +19,4 @@ The header.md is prefixed to all the documents to let users understand that edit
 ## TODO
 1. Add logic to switch between stash and filesystem
 2. error handling
-3. CLI
-4. Remove pages from confluence that have been removed from stash
+3. Remove pages from confluence that have been removed from stash

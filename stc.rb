@@ -12,8 +12,6 @@ class StashToConfluence
 
       @space = space
       @app_name = app_name
-      require 'pry'
-      binding.pry
     end
 
     def go

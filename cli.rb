@@ -16,7 +16,6 @@ class StashToConfluence
 
     # The password of the user for interactions with Confluence and Stash.
     attr_accessor :password
-    alias :p :password
 
     # The name of the Confluence Space to use.
     attr_accessor :space
@@ -32,7 +31,6 @@ class StashToConfluence
     class Stash < self
       # The Stash Project to read from
       attr_accessor :project
-      alias :pr :project
 
       # The Stash Repository to read from
       attr_accessor :repository
@@ -40,9 +38,12 @@ class StashToConfluence
       # TODO use repository name?
       attr_accessor :app_name
 
+      # The URL to your Stash server - "https://git.nordstrom.net"
+      attr_accessor :stash_url
+
       # Convert markdown structure from Stash into Confluence
       def call
-        app = Application.new(@username, @password, @space, @app_name, @project, @repository)
+        app = Application.new(@username, @password, @space, @app_name, @project, @repository, @confluence_url, @stash_url)
         app.go
       end
     end

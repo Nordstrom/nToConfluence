@@ -55,10 +55,9 @@ class StashToConfluence
 
   class Stash
     # https://developer.atlassian.com/static/rest/stash/2.12.0/stash-rest.html
-    def initialize(user, password, project, repo)
-      url = "https://git.nordstrom.net/"
-      @api = "rest/api/1.0/projects/#{project}/repos/#{repo}"
-      @raw = "projects/#{project}/repos/#{repo}/browse/"
+    def initialize(user, password, project, repo, url)
+      @api = "/rest/api/1.0/projects/#{project}/repos/#{repo}"
+      @raw = "/projects/#{project}/repos/#{repo}/browse/"
       @conn = Faraday.new(url, ssl: { verify: false }) do |f|
         f.basic_auth(user, password)
         f.request :url_encoded
@@ -80,14 +79,16 @@ class StashToConfluence
   end
 
   class Application
-    def initialize(user, password, space, app_name, project, repo)
-      @confluence = Confluence.new("https://confluence.nordstrom.net/rpc/xmlrpc", user, password)
-      @stash = Stash.new(user, password, project, repo)
+    def initialize(user, password, space, app_name, project, repo, confluence_url, stash_url)
+      @confluence = Confluence.new(confluence_url, user, password)
+      @stash = Stash.new(user, password, project, repo, stash_url)
       @markdown = MarkdownToHtml.new()
       @header = @markdown.render(File.read('header.md'))
 
       @space = space
       @app_name = app_name
+      require 'pry'
+      binding.pry
     end
 
     def go

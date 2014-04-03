@@ -8,7 +8,6 @@ class StashToConfluence
 
     # The url to the XML RPC Confluence interface - "https://confluence.zzzz.com/rpc/xmlrpc".
     attr_accessor :confluence_url
-    alias :c :confluence_url
 
     # The username/login of the user for interactions with Confluence and Stash.
     attr_accessor :username
@@ -19,7 +18,6 @@ class StashToConfluence
 
     # The name of the Confluence Space to use.
     attr_accessor :space
-    alias :s :space
 
     # Show this message.
     def help!
@@ -45,6 +43,32 @@ class StashToConfluence
       def call
         app = Application.new(@username, @password, @space, @app_name, @project, @repository, @confluence_url, @stash_url)
         app.go
+      end
+    end
+
+    class Knife < self
+      # The full path to the knife.rb file to use
+      attr_accessor :config
+
+      def call 
+        title = "Servers"
+        knife = Sources::Knife.new(@config)
+        markdown = knife.get_file
+        converter = MarkdownToHtml.new
+        html = converter.render(markdown)
+        confluence = Confluence.new(@confluence_url, @username, @password)
+        start_page_id = confluence.get_home_id(@space)
+
+        begin
+          page = confluence.get_page_by_space(@space, title)
+        rescue
+          page = { "content" => "", "title" => "", "space" => @space, "parentId" => start_page_id }
+        end
+
+        page['content'] = html 
+        page['title'] = title
+
+        confluence.save_page(page)
       end
     end
   end

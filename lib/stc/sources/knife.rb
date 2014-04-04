@@ -9,7 +9,7 @@ class StashToConfluence
 
       def get_content
         content = []
-        content.push({ title: 'Servers', md: get_file })
+        content.push({ title: 'Chef Nodes', md: get_file })
         content
       end
 

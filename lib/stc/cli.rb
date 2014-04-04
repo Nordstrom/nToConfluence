@@ -53,8 +53,23 @@ class StashToConfluence
       # The name of the Chef Org (becomes page title prefix)
       attr_accessor :org_name
 
+      # Generate a report based on a knife query.
       def call
         source = Sources::Knife.new(@config, @org_name)
+        do_stuff(source)
+      end
+    end
+
+    class Disk < self
+      # Path to the directory with .md files
+      attr_accessor :path
+
+      # Name of the .md file to use as the parent page
+      attr_accessor :start_file
+
+      # Upload contents of a directory into Confluence
+      def call
+        source = Sources::Disk.new(@path, @start_file)
         do_stuff(source)
       end
     end

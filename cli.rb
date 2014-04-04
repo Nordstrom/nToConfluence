@@ -41,8 +41,8 @@ class StashToConfluence
 
       # Convert markdown structure from Stash into Confluence
       def call
-        app = Application.new(@username, @password, @space, @app_name, @project, @repository, @confluence_url, @stash_url)
-        app.go
+        source = Sources::Stash.new(@username, @password, @project, @repository, @stash_url)
+        do_stuff(source)
       end
     end
 
@@ -50,26 +50,17 @@ class StashToConfluence
       # The full path to the knife.rb file to use
       attr_accessor :config
 
-      def call 
-        title = "Servers"
-        knife = Sources::Knife.new(@config)
-        markdown = knife.get_file
-        converter = MarkdownToHtml.new
-        html = converter.render(markdown)
-        confluence = Confluence.new(@confluence_url, @username, @password)
-        start_page_id = confluence.get_home_id(@space)
-
-        begin
-          page = confluence.get_page_by_space(@space, title)
-        rescue
-          page = { "content" => "", "title" => "", "space" => @space, "parentId" => start_page_id }
-        end
-
-        page['content'] = html 
-        page['title'] = title
-
-        confluence.save_page(page)
+      def call
+        source = Sources::Knife.new(@config)
+        do_stuff(source)
       end
+    end
+
+    private
+
+    def do_stuff(source)
+      app = Application.new(@username, @password, @space, @confluence_url, source)
+      app.go
     end
   end
 end

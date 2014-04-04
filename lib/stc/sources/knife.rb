@@ -7,6 +7,12 @@ class StashToConfluence
         @config = config
       end
 
+      def get_content
+        content = []
+        content.push({ title: 'Servers', md: get_file })
+        content
+      end
+
       def get_file
         output = `knife search "name:*" -c #{@config} -F json`
         search = JSON.parse(output)

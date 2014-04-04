@@ -27,5 +27,19 @@ class StashToConfluence
     def get_home_id(space)
       @confluence.getSpace(@token, space)['homePage']
     end
+
+    def upsert_page(space, title, parent_id, content, header)
+      begin
+        page = get_page_by_space(space, title)
+        # TODO: Catch the specific exception we want
+      rescue
+        page = { "content" => "", "title" => "", "space" => space, "parentId" => parent_id }
+      end
+
+      page['content'] = "#{header}<hr/>#{content}"
+      page['title'] = title
+
+      save_page(page)
+    end
   end
 end

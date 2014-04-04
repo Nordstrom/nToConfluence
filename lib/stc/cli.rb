@@ -50,8 +50,11 @@ class StashToConfluence
       # The full path to the knife.rb file to use
       attr_accessor :config
 
+      # The name of the Chef Org (becomes page title prefix)
+      attr_accessor :org_name
+
       def call
-        source = Sources::Knife.new(@config)
+        source = Sources::Knife.new(@config, @org_name)
         do_stuff(source)
       end
     end

@@ -3,13 +3,14 @@ require 'json'
 class StashToConfluence
   class Sources
     class Knife
-      def initialize(config)
+      def initialize(config, org_name)
         @config = config
+        @org_name = org_name
       end
 
       def get_content
         content = []
-        content.push({ title: 'Chef Nodes', md: get_file })
+        content.push({ title: "#{@org_name} Chef Nodes", md: get_file })
         content
       end
 

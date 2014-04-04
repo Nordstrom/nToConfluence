@@ -1,5 +1,5 @@
 require 'executable'
-require './stc.rb'
+require 'lib/stc.rb'
 
 class StashToConfluence
   # comment on overall class

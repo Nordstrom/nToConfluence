@@ -16,8 +16,8 @@ class StashToConfluence
 
         @repo = repo
 
-        root = 'README.md'
-        docs_dir = 'docs'
+        @root = 'README.md'
+        @docs_dir = 'docs'
       end
 
       def get_content

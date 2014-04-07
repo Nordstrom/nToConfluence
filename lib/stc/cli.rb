@@ -37,9 +37,6 @@ class StashToConfluence
       # The Stash Repository to read from
       attr_accessor :repository
 
-      # TODO use repository name?
-      attr_accessor :app_name
-
       # The URL to your Stash server - "https://git.nordstrom.net"
       attr_accessor :stash_url
 

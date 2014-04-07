@@ -1,7 +1,7 @@
 require 'executable'
 require 'lib/stc.rb'
 
-class StashToConfluence
+class N2Confluence
   class CLI
     include Executable
 
@@ -25,7 +25,7 @@ class StashToConfluence
     end
     alias :h! :help!
 
-    # N-2-Confluence is a simple application that takes markdown from various sources and uploads it into Confluence.
+    # N2Confluence is a simple application that takes markdown from various sources and uploads it into Confluence.
     def call
       help!
     end

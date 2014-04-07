@@ -1,6 +1,6 @@
 require 'json'
 
-class StashToConfluence
+class N2Confluence
   class Sources
     class Knife < Source
       def initialize(config, org_name)

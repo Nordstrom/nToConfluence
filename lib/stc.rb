@@ -5,7 +5,7 @@ require 'lib/stc/sources/stash'
 require 'lib/stc/sources/knife'
 require 'lib/stc/sources/disk'
 
-class StashToConfluence
+class N2Confluence
   class Application
     def initialize(user, password, space, confluence_url, source)
       @confluence = Confluence.new(confluence_url, user, password)

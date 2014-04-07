@@ -1,7 +1,7 @@
 require 'redcarpet'
 
 # Convert markdown contents to html
-class StashToConfluence
+class N2Confluence
   class MarkdownToHtml
     def initialize
       @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)

@@ -1,6 +1,6 @@
 require 'xmlrpc/client'
 
-class StashToConfluence
+class N2Confluence
   class Confluence
     # objects: https://developer.atlassian.com/display/CONFDEV/Remote+Confluence+Data+Objects
     # methods: https://developer.atlassian.com/display/CONFDEV/Remote+Confluence+Methods

@@ -1,4 +1,4 @@
-class StashToConfluence
+class N2Confluence
   class Sources
     # TODO: Handle recursion
     class Disk < Source

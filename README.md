@@ -1,11 +1,11 @@
-# Stash To Confluence - needs new name!
+# N To Confluence
 
 ## Overview
 Creates content in Confluence from various sources.
 
 ## Prereqs:
 1. Ruby 1.9.3
-2. Install the gems via Gemfile
+2. Install the gems specified in Gemfile
 
 ## Info
 The header.md is prefixed to all the documents to let users understand that edits will be removed the next time this tool is run.  Feel free to modify it to fit your needs.
@@ -28,6 +28,10 @@ Generates a nice "report" from a knife query and uploads it to confluence.  The 
 ### Disk
 Takes the markdown files in a folder and uploads them into Confluence.
 
+### EC2
+Coming soon?
+
 ## TODO
-1. error handling
-2. Remove pages from confluence that have been removed from stash
+1. Error handling
+2. Remove pages from confluence that have been removed from the source
+3. Make into a gem

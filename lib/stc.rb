@@ -1,5 +1,6 @@
 require 'lib/stc/confluence'
 require 'lib/stc/markdown_to_html'
+require 'lib/stc/sources/source'
 require 'lib/stc/sources/stash'
 require 'lib/stc/sources/knife'
 require 'lib/stc/sources/disk'

@@ -2,7 +2,7 @@ require 'json'
 
 class StashToConfluence
   class Sources
-    class Knife
+    class Knife < Source
       def initialize(config, org_name)
         @config = config
         @org_name = org_name

@@ -1,7 +1,7 @@
 class StashToConfluence
   class Sources
     # TODO: Handle recursion
-    class Disk
+    class Disk < Source
       def initialize(path, start_file)
         @path = path
         @start_file = start_file.sub('.md', '')

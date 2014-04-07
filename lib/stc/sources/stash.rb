@@ -3,7 +3,7 @@ require 'json'
 
 class StashToConfluence
   class Sources
-    class Stash
+    class Stash < Source
       # https://developer.atlassian.com/static/rest/stash/2.12.0/stash-rest.html
       def initialize(user, password, project, repo, url)
         @api = "/rest/api/1.0/projects/#{project}/repos/#{repo}"

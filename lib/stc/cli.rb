@@ -45,8 +45,7 @@ class StashToConfluence
 
       # Convert markdown structure from Stash into Confluence
       def call
-        source = Sources::Stash.new(@username, @password, @project, @repository, @stash_url)
-        do_stuff(source)
+        do_stuff(Sources::Stash, @username, @password, @project, @repository, @stash_url)
       end
     end
 
@@ -59,8 +58,7 @@ class StashToConfluence
 
       # Generate a report based on a knife query.
       def call
-        source = Sources::Knife.new(@config, @org_name)
-        do_stuff(source)
+        do_stuff(Sources::Knife, @config, @org_name)
       end
     end
 
@@ -73,14 +71,14 @@ class StashToConfluence
 
       # Upload contents of a directory into Confluence
       def call
-        source = Sources::Disk.new(@path, @start_file)
-        do_stuff(source)
+        do_stuff(Sources::Disk, @path, @start_file)
       end
     end
 
     private
 
-    def do_stuff(source)
+    def do_stuff(type, *params)
+      source = type.new(*params)
       app = Application.new(@username, @password, @space, @confluence_url, source)
       app.go
     end

@@ -1,5 +1,5 @@
 require 'executable'
-require 'lib/stc.rb'
+require 'lib/n2c.rb'
 
 class N2Confluence
   class CLI

@@ -1,16 +1,16 @@
-require 'lib/n2c/confluence'
-require 'lib/n2c/markdown_to_html'
-require 'lib/n2c/sources/source'
-require 'lib/n2c/sources/stash'
-require 'lib/n2c/sources/knife'
-require 'lib/n2c/sources/disk'
+require 'n2c/confluence'
+require 'n2c/markdown_to_html'
+require 'n2c/sources/source'
+require 'n2c/sources/stash'
+require 'n2c/sources/knife'
+require 'n2c/sources/disk'
 
 class N2Confluence
   class Application
     def initialize(user, password, space, confluence_url, source)
       @confluence = Confluence.new(confluence_url, user, password)
       @markdown = MarkdownToHtml.new
-      @header = @markdown.render(File.read('header.md'))
+      @header = @markdown.render(File.read('../header.md'))
 
       @space = space
       @source = source
